@@ -33,6 +33,7 @@ Este proyecto implementa el procesamiento y visualización de datos LiDAR obteni
 Tarea2/
 ├── dataset_ROS/
 │   └── ...
+├── Modelo_G2T.ttt
 ├── lidar.py
 ├── lidar_kalman.py
 └── README.md
@@ -40,12 +41,24 @@ Tarea2/
 
 ---
 
-## Scripts
+## Archivos principales
 
-| Script | Descripción |
-|--------|-------------|
-| `lidar.py` | Estimación geométrica de ángulos φ₁ y φ₂ con visualización interactiva y evaluación de error. |
-| `lidar_kalman.py` | Extensión con Filtro de Kalman Extendido (EKF) para fusión de sensores. Incluye modelo cinemático del sistema G2T y comparación EKF vs ground truth. |
+| Archivo | Descripción |
+|----------|-------------|
+| `Modelo_G2T.ttt` | Escena de CoppeliaSim utilizada para modelar y visualizar el sistema G2T (tractor–doble remolque). Permite obtener los datos de referencia (ground truth) empleados en la evaluación de los algoritmos de estimación. |
+| `lidar.py` | Procesamiento de datos LiDAR y estimación geométrica de los ángulos φ₁ y φ₂ mediante detección de líneas y análisis de mediciones. |
+| `lidar_kalman.py` | Implementación de un Filtro de Kalman Extendido (EKF) para fusionar las mediciones LiDAR con el modelo cinemático del sistema G2T. Incluye comparación entre estimaciones y datos de referencia. |
+| `dataset_ROS/` | Rosbag de ROS 2 que contiene las mediciones LiDAR y las variables de referencia utilizadas durante la evaluación. |
+
+---
+
+## Flujo de trabajo
+
+1. Simulación del sistema G2T en CoppeliaSim mediante `Modelo_G2T.ttt`.
+2. Generación y almacenamiento de datos en un rosbag de ROS 2.
+3. Procesamiento de mediciones LiDAR mediante `lidar.py`.
+4. Fusión de sensores utilizando un Filtro de Kalman Extendido mediante `lidar_kalman.py`.
+5. Comparación de resultados con los datos de referencia (ground truth).
 
 ---
 
@@ -58,13 +71,11 @@ Tarea2/
 
 ## Instalación
 
-Instalar las dependencias necesarias:
-
 ```bash
 pip install numpy matplotlib scikit-learn rosbags --break-system-packages
 ```
 
-Alternativamente, se recomienda utilizar un entorno virtual:
+Alternativamente:
 
 ```bash
 python3 -m venv .venv
@@ -76,13 +87,13 @@ pip install numpy matplotlib scikit-learn rosbags
 
 ## Ejecución
 
-Estimación geométrica (Parte 1):
+### Estimación geométrica (Parte 1)
 
 ```bash
 python3 lidar.py --bag ./dataset_ROS
 ```
 
-Estimación con EKF (Parte 2):
+### Estimación con EKF (Parte 2)
 
 ```bash
 python3 lidar_kalman.py --bag ./dataset_ROS
@@ -97,6 +108,12 @@ El rosbag debe ubicarse dentro de la carpeta `dataset_ROS/`, o bien indicar la r
 ```bash
 python3 lidar.py --bag <ruta_al_rosbag>
 ```
+
+---
+
+## Simulación en CoppeliaSim
+
+El archivo `Modelo_G2T.ttt` contiene el entorno de simulación utilizado para generar los datos experimentales. La escena modela un sistema tractor–doble remolque (G2T) equipado con sensores LiDAR y permite obtener las variables de referencia necesarias para evaluar el desempeño de los algoritmos de estimación implementados.
 
 ---
 
