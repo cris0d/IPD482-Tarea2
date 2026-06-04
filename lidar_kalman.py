@@ -426,15 +426,142 @@ def plot_pose_comparison(scans, odom, kf_results, gt1, gt2):
     fig.subplots_adjust(hspace=0.25,bottom=0.06,top=0.94)
     plt.show()
 
+# ── Comparación EKF vs Ground Truth (6 figuras separadas) ────────────────────
+def plot_ekf_vs_gt(results, scans, kf_results, gt1, gt2, save_dir='.'):
+    ts_est   = np.array([sc['ts'] - scans[0]['ts'] for sc in scans])
+
+    th1_raw  = np.array([r['theta1'] if r and r['theta1'] is not None else np.nan for r in results])
+    th2_raw  = np.array([r['theta2'] if r and r['theta2'] is not None else np.nan for r in results])
+    th1_kf   = np.array([k['theta1_kf_rel'] for k in kf_results])
+    th2_kf   = np.array([k['theta2_kf_rel'] for k in kf_results])
+    th1_gt   = interp_gt(gt1, ts_est)
+    th2_gt   = interp_gt(gt2, ts_est)
+
+    err1_raw = th1_raw - th1_gt;  err2_raw = th2_raw - th2_gt
+    err1_kf  = th1_kf  - th1_gt;  err2_kf  = th2_kf  - th2_gt
+
+    rmse1_raw = np.sqrt(np.nanmean(err1_raw**2)); mae1_raw = np.nanmean(np.abs(err1_raw))
+    std1_raw  = np.nanstd(err1_raw);              max1_raw = np.nanmax(np.abs(err1_raw))
+    rmse2_raw = np.sqrt(np.nanmean(err2_raw**2)); mae2_raw = np.nanmean(np.abs(err2_raw))
+    std2_raw  = np.nanstd(err2_raw);              max2_raw = np.nanmax(np.abs(err2_raw))
+    rmse1_kf  = np.sqrt(np.nanmean(err1_kf**2)); mae1_kf  = np.nanmean(np.abs(err1_kf))
+    std1_kf   = np.nanstd(err1_kf);              max1_kf  = np.nanmax(np.abs(err1_kf))
+    rmse2_kf  = np.sqrt(np.nanmean(err2_kf**2)); mae2_kf  = np.nanmean(np.abs(err2_kf))
+    std2_kf   = np.nanstd(err2_kf);              max2_kf  = np.nanmax(np.abs(err2_kf))
+
+    print("\n╔══════════════════════════════════════════════════════════════╗")
+    print(  "║          TABLA COMPARATIVA: LiDAR vs EKF vs GT              ║")
+    print(  "╠══════════════╦══════════╦══════════╦══════════╦═════════════╣")
+    print(  "║              ║  RMSE(°) ║  MAE(°)  ║  std(°)  ║ max_abs(°)  ║")
+    print(  "╠══════════════╬══════════╬══════════╬══════════╬═════════════╣")
+    print(f"║ φ₁ LiDAR     ║ {rmse1_raw:8.3f} ║ {mae1_raw:8.3f} ║ {std1_raw:8.3f} ║ {max1_raw:11.3f} ║")
+    print(f"║ φ₁ EKF       ║ {rmse1_kf:8.3f} ║ {mae1_kf:8.3f} ║ {std1_kf:8.3f} ║ {max1_kf:11.3f} ║")
+    print(  "╠══════════════╬══════════╬══════════╬══════════╬═════════════╣")
+    print(f"║ φ₂ LiDAR     ║ {rmse2_raw:8.3f} ║ {mae2_raw:8.3f} ║ {std2_raw:8.3f} ║ {max2_raw:11.3f} ║")
+    print(f"║ φ₂ EKF       ║ {rmse2_kf:8.3f} ║ {mae2_kf:8.3f} ║ {std2_kf:8.3f} ║ {max2_kf:11.3f} ║")
+    print(  "╚══════════════╩══════════╩══════════╩══════════╩═════════════╝\n")
+
+    valid1_raw=err1_raw[~np.isnan(err1_raw)]; valid1_kf=err1_kf[~np.isnan(err1_kf)]
+    valid2_raw=err2_raw[~np.isnan(err2_raw)]; valid2_kf=err2_kf[~np.isnan(err2_kf)]
+
+    # Fig 1: φ₁ LiDAR + EKF vs GT
+    fig, ax = plt.subplots(figsize=(10,4))
+    ax.plot(ts_est,th1_gt, color='#333333',lw=1.5,ls='--',label='GT φ₁')
+    ax.plot(ts_est,th1_raw,color='#90CAF9',lw=1.2,alpha=0.7,label='LiDAR crudo φ₁')
+    ax.plot(ts_est,th1_kf, color='#0D47A1',lw=2.0,label='EKF φ₁')
+    ax.set_title('φ₁ — LiDAR crudo vs EKF vs GT',fontsize=10)
+    ax.set_xlabel('tiempo (s)',fontsize=9); ax.set_ylabel('ángulo (°)',fontsize=9)
+    ax.legend(fontsize=9); ax.grid(True,lw=0.4,color='#cccccc',ls='--')
+    plt.tight_layout()
+    p=f'{save_dir}/ekf_phi1_vs_gt.png'
+    plt.savefig(p,dpi=150,bbox_inches='tight'); print(f"[OK] {p}"); plt.show()
+
+    # Fig 2: error φ₁ temporal
+    fig, ax = plt.subplots(figsize=(10,4))
+    ax.plot(ts_est,err1_raw,color='#90CAF9',lw=1.0,alpha=0.8,label=f'LiDAR  RMSE={rmse1_raw:.2f}°')
+    ax.plot(ts_est,err1_kf, color='#0D47A1',lw=1.5,label=f'EKF    RMSE={rmse1_kf:.2f}°')
+    ax.axhline(0,color='black',lw=0.8,ls='--')
+    ax.set_title('Error φ₁  (estimado − GT)',fontsize=10)
+    ax.set_xlabel('tiempo (s)',fontsize=9); ax.set_ylabel('error (°)',fontsize=9)
+    ax.legend(fontsize=9); ax.grid(True,lw=0.4,color='#cccccc',ls='--')
+    plt.tight_layout()
+    p=f'{save_dir}/ekf_phi1_error_temporal.png'
+    plt.savefig(p,dpi=150,bbox_inches='tight'); print(f"[OK] {p}"); plt.show()
+
+    # Fig 3: histograma error φ₁
+    fig, ax = plt.subplots(figsize=(8,4))
+    ax.hist(valid1_raw,bins=30,color='#90CAF9',alpha=0.6,edgecolor='white',label='LiDAR crudo')
+    ax.hist(valid1_kf, bins=30,color='#0D47A1',alpha=0.6,edgecolor='white',label='EKF')
+    ax.axvline(0,color='black',lw=1,ls='--')
+    ax.set_title('Distribución error φ₁  (estimado − GT)',fontsize=10)
+    ax.set_xlabel('error (°)',fontsize=9); ax.set_ylabel('frecuencia',fontsize=9)
+    ax.legend(fontsize=8); ax.grid(True,lw=0.4,color='#cccccc',ls='--',axis='y')
+    fig.text(0.5,0.01,
+             f'LiDAR: RMSE={rmse1_raw:.3f}°  MAE={mae1_raw:.3f}°  std={std1_raw:.3f}°  max={max1_raw:.3f}°   |   '
+             f'EKF: RMSE={rmse1_kf:.3f}°  MAE={mae1_kf:.3f}°  std={std1_kf:.3f}°  max={max1_kf:.3f}°',
+             ha='center',fontsize=7.5,color='#333',
+             bbox=dict(facecolor='#f5f5f5',edgecolor='#cccccc',boxstyle='round,pad=0.3'))
+    plt.tight_layout(rect=[0,0.07,1,1])
+    p=f'{save_dir}/ekf_phi1_histograma.png'
+    plt.savefig(p,dpi=150,bbox_inches='tight'); print(f"[OK] {p}"); plt.show()
+
+    # Fig 4: φ₂ LiDAR + EKF vs GT
+    fig, ax = plt.subplots(figsize=(10,4))
+    ax.plot(ts_est,th2_gt, color='#333333',lw=1.5,ls='--',label='GT φ₂')
+    ax.plot(ts_est,th2_raw,color='#FFAB91',lw=1.2,alpha=0.7,label='LiDAR crudo φ₂')
+    ax.plot(ts_est,th2_kf, color='#BF360C',lw=2.0,label='EKF φ₂')
+    ax.set_title('φ₂ — LiDAR crudo vs EKF vs GT',fontsize=10)
+    ax.set_xlabel('tiempo (s)',fontsize=9); ax.set_ylabel('ángulo (°)',fontsize=9)
+    ax.legend(fontsize=9); ax.grid(True,lw=0.4,color='#cccccc',ls='--')
+    plt.tight_layout()
+    p=f'{save_dir}/ekf_phi2_vs_gt.png'
+    plt.savefig(p,dpi=150,bbox_inches='tight'); print(f"[OK] {p}"); plt.show()
+
+    # Fig 5: error φ₂ temporal
+    fig, ax = plt.subplots(figsize=(10,4))
+    ax.plot(ts_est,err2_raw,color='#FFAB91',lw=1.0,alpha=0.8,label=f'LiDAR  RMSE={rmse2_raw:.2f}°')
+    ax.plot(ts_est,err2_kf, color='#BF360C',lw=1.5,label=f'EKF    RMSE={rmse2_kf:.2f}°')
+    ax.axhline(0,color='black',lw=0.8,ls='--')
+    ax.set_title('Error φ₂  (estimado − GT)',fontsize=10)
+    ax.set_xlabel('tiempo (s)',fontsize=9); ax.set_ylabel('error (°)',fontsize=9)
+    ax.legend(fontsize=9); ax.grid(True,lw=0.4,color='#cccccc',ls='--')
+    plt.tight_layout()
+    p=f'{save_dir}/ekf_phi2_error_temporal.png'
+    plt.savefig(p,dpi=150,bbox_inches='tight'); print(f"[OK] {p}"); plt.show()
+
+    # Fig 6: histograma error φ₂
+    fig, ax = plt.subplots(figsize=(8,4))
+    ax.hist(valid2_raw,bins=30,color='#FFAB91',alpha=0.6,edgecolor='white',label='LiDAR crudo')
+    ax.hist(valid2_kf, bins=30,color='#BF360C',alpha=0.6,edgecolor='white',label='EKF')
+    ax.axvline(0,color='black',lw=1,ls='--')
+    ax.set_title('Distribución error φ₂  (estimado − GT)',fontsize=10)
+    ax.set_xlabel('error (°)',fontsize=9); ax.set_ylabel('frecuencia',fontsize=9)
+    ax.legend(fontsize=8); ax.grid(True,lw=0.4,color='#cccccc',ls='--',axis='y')
+    fig.text(0.5,0.01,
+             f'LiDAR: RMSE={rmse2_raw:.3f}°  MAE={mae2_raw:.3f}°  std={std2_raw:.3f}°  max={max2_raw:.3f}°   |   '
+             f'EKF: RMSE={rmse2_kf:.3f}°  MAE={mae2_kf:.3f}°  std={std2_kf:.3f}°  max={max2_kf:.3f}°',
+             ha='center',fontsize=7.5,color='#333',
+             bbox=dict(facecolor='#f5f5f5',edgecolor='#cccccc',boxstyle='round,pad=0.3'))
+    plt.tight_layout(rect=[0,0.07,1,1])
+    p=f'{save_dir}/ekf_phi2_histograma.png'
+    plt.savefig(p,dpi=150,bbox_inches='tight'); print(f"[OK] {p}"); plt.show()
+
+    return {'rmse1_raw':rmse1_raw,'mae1_raw':mae1_raw,'std1_raw':std1_raw,'max1_raw':max1_raw,
+            'rmse1_kf':rmse1_kf,  'mae1_kf':mae1_kf,  'std1_kf':std1_kf,  'max1_kf':max1_kf,
+            'rmse2_raw':rmse2_raw,'mae2_raw':mae2_raw,'std2_raw':std2_raw,'max2_raw':max2_raw,
+            'rmse2_kf':rmse2_kf,  'mae2_kf':mae2_kf,  'std2_kf':std2_kf,  'max2_kf':max2_kf}
+
 # ── Main ─────────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='EKF G2T – IPD482')
-    parser.add_argument('--bag',   default=BAG_PATH)
-    parser.add_argument('--topic', default=SCAN_TOPIC)
+    parser.add_argument('--bag',      default=BAG_PATH)
+    parser.add_argument('--topic',    default=SCAN_TOPIC)
+    parser.add_argument('--save-dir', default='.', help='Directorio donde guardar las figuras')
     args = parser.parse_args()
 
     scans          = load_scans(args.bag, args.topic)
     gt1, gt2, odom = load_ground_truth(args.bag)
     results, kf_results = plot_interactive(scans, odom)
     plot_pose_comparison(scans, odom, kf_results, gt1, gt2)
+    plot_ekf_vs_gt(results, scans, kf_results, gt1, gt2, save_dir=args.save_dir)
