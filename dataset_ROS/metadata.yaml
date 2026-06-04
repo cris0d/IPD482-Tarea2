@@ -2,10 +2,10 @@ rosbag2_bagfile_information:
   version: 9
   storage_identifier: mcap
   duration:
-    nanoseconds: 86580424962
+    nanoseconds: 82877462412
   starting_time:
-    nanoseconds_since_epoch: 1780537485755862379
-  message_count: 3609
+    nanoseconds_since_epoch: 1780473638378126997
+  message_count: 2856
   topics_with_message_count:
     - topic_metadata:
         name: /odom
@@ -28,117 +28,7 @@ rosbag2_bagfile_information:
               nsec: 854775807
             avoid_ros_namespace_conventions: false
         type_description_hash: RIHS01_3cc97dc7fb7502f8714462c526d369e35b603cfc34d946e3f2eda2766dfec6e0
-      message_count: 765
-    - topic_metadata:
-        name: /gt_theta2
-        type: std_msgs/msg/Float64
-        serialization_format: cdr
-        offered_qos_profiles:
-          - history: unknown
-            depth: 0
-            reliability: reliable
-            durability: volatile
-            deadline:
-              sec: 9223372036
-              nsec: 854775807
-            lifespan:
-              sec: 9223372036
-              nsec: 854775807
-            liveliness: automatic
-            liveliness_lease_duration:
-              sec: 9223372036
-              nsec: 854775807
-            avoid_ros_namespace_conventions: false
-        type_description_hash: RIHS01_705ba9c3d1a09df43737eb67095534de36fd426c0587779bda2bc51fe790182a
-      message_count: 765
-    - topic_metadata:
-        name: /gt_theta1
-        type: std_msgs/msg/Float64
-        serialization_format: cdr
-        offered_qos_profiles:
-          - history: unknown
-            depth: 0
-            reliability: reliable
-            durability: volatile
-            deadline:
-              sec: 9223372036
-              nsec: 854775807
-            lifespan:
-              sec: 9223372036
-              nsec: 854775807
-            liveliness: automatic
-            liveliness_lease_duration:
-              sec: 9223372036
-              nsec: 854775807
-            avoid_ros_namespace_conventions: false
-        type_description_hash: RIHS01_705ba9c3d1a09df43737eb67095534de36fd426c0587779bda2bc51fe790182a
-      message_count: 765
-    - topic_metadata:
-        name: /cmd_velocity
-        type: std_msgs/msg/Float64
-        serialization_format: cdr
-        offered_qos_profiles:
-          - history: unknown
-            depth: 0
-            reliability: reliable
-            durability: volatile
-            deadline:
-              sec: 9223372036
-              nsec: 854775807
-            lifespan:
-              sec: 9223372036
-              nsec: 854775807
-            liveliness: automatic
-            liveliness_lease_duration:
-              sec: 9223372036
-              nsec: 854775807
-            avoid_ros_namespace_conventions: false
-        type_description_hash: RIHS01_705ba9c3d1a09df43737eb67095534de36fd426c0587779bda2bc51fe790182a
-      message_count: 275
-    - topic_metadata:
-        name: /cmd_steering
-        type: std_msgs/msg/Float64
-        serialization_format: cdr
-        offered_qos_profiles:
-          - history: unknown
-            depth: 0
-            reliability: reliable
-            durability: volatile
-            deadline:
-              sec: 9223372036
-              nsec: 854775807
-            lifespan:
-              sec: 9223372036
-              nsec: 854775807
-            liveliness: automatic
-            liveliness_lease_duration:
-              sec: 9223372036
-              nsec: 854775807
-            avoid_ros_namespace_conventions: false
-        type_description_hash: RIHS01_705ba9c3d1a09df43737eb67095534de36fd426c0587779bda2bc51fe790182a
-      message_count: 275
-    - topic_metadata:
-        name: /scan
-        type: sensor_msgs/msg/LaserScan
-        serialization_format: cdr
-        offered_qos_profiles:
-          - history: unknown
-            depth: 0
-            reliability: reliable
-            durability: volatile
-            deadline:
-              sec: 9223372036
-              nsec: 854775807
-            lifespan:
-              sec: 9223372036
-              nsec: 854775807
-            liveliness: automatic
-            liveliness_lease_duration:
-              sec: 9223372036
-              nsec: 854775807
-            avoid_ros_namespace_conventions: false
-        type_description_hash: RIHS01_64c191398013af96509d518dac71d5164f9382553fce5c1f8cca5be7924bd828
-      message_count: 382
+      message_count: 714
     - topic_metadata:
         name: /lidar_pose
         type: nav_msgs/msg/Odometry
@@ -160,17 +50,83 @@ rosbag2_bagfile_information:
               nsec: 854775807
             avoid_ros_namespace_conventions: false
         type_description_hash: RIHS01_3cc97dc7fb7502f8714462c526d369e35b603cfc34d946e3f2eda2766dfec6e0
-      message_count: 382
+      message_count: 357
+    - topic_metadata:
+        name: /gt_theta2
+        type: std_msgs/msg/Float64
+        serialization_format: cdr
+        offered_qos_profiles:
+          - history: unknown
+            depth: 0
+            reliability: reliable
+            durability: volatile
+            deadline:
+              sec: 9223372036
+              nsec: 854775807
+            lifespan:
+              sec: 9223372036
+              nsec: 854775807
+            liveliness: automatic
+            liveliness_lease_duration:
+              sec: 9223372036
+              nsec: 854775807
+            avoid_ros_namespace_conventions: false
+        type_description_hash: RIHS01_705ba9c3d1a09df43737eb67095534de36fd426c0587779bda2bc51fe790182a
+      message_count: 714
+    - topic_metadata:
+        name: /gt_theta1
+        type: std_msgs/msg/Float64
+        serialization_format: cdr
+        offered_qos_profiles:
+          - history: unknown
+            depth: 0
+            reliability: reliable
+            durability: volatile
+            deadline:
+              sec: 9223372036
+              nsec: 854775807
+            lifespan:
+              sec: 9223372036
+              nsec: 854775807
+            liveliness: automatic
+            liveliness_lease_duration:
+              sec: 9223372036
+              nsec: 854775807
+            avoid_ros_namespace_conventions: false
+        type_description_hash: RIHS01_705ba9c3d1a09df43737eb67095534de36fd426c0587779bda2bc51fe790182a
+      message_count: 714
+    - topic_metadata:
+        name: /scan
+        type: sensor_msgs/msg/LaserScan
+        serialization_format: cdr
+        offered_qos_profiles:
+          - history: unknown
+            depth: 0
+            reliability: reliable
+            durability: volatile
+            deadline:
+              sec: 9223372036
+              nsec: 854775807
+            lifespan:
+              sec: 9223372036
+              nsec: 854775807
+            liveliness: automatic
+            liveliness_lease_duration:
+              sec: 9223372036
+              nsec: 854775807
+            avoid_ros_namespace_conventions: false
+        type_description_hash: RIHS01_64c191398013af96509d518dac71d5164f9382553fce5c1f8cca5be7924bd828
+      message_count: 357
   compression_format: ""
   compression_mode: ""
   relative_file_paths:
-    - dataset_g2t_v7_0.mcap
+    - dataset_g2t_v6_0.mcap
   files:
-    - path: dataset_g2t_v7_0.mcap
+    - path: dataset_g2t_v6_0.mcap
       starting_time:
-        nanoseconds_since_epoch: 1780537485755862379
+        nanoseconds_since_epoch: 1780473638378126997
       duration:
-        nanoseconds: 86580424962
-      message_count: 3609
+        nanoseconds: 82877462412
+      message_count: 2856
   custom_data: ~
   ros_distro: jazzy
