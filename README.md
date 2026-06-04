@@ -23,6 +23,7 @@ Este proyecto implementa el procesamiento y visualización de datos LiDAR obteni
 - Detección de líneas mediante RANSAC.
 - Agrupamiento de puntos utilizando DBSCAN.
 - Análisis geométrico de mediciones LiDAR.
+- Fusión de sensores mediante Filtro de Kalman Extendido (EKF).
 
 ---
 
@@ -33,8 +34,18 @@ Tarea2/
 ├── dataset_ROS/
 │   └── ...
 ├── lidar.py
+├── lidar_kalman.py
 └── README.md
 ```
+
+---
+
+## Scripts
+
+| Script | Descripción |
+|--------|-------------|
+| `lidar.py` | Estimación geométrica de ángulos φ₁ y φ₂ con visualización interactiva y evaluación de error. |
+| `lidar_kalman.py` | Extensión con Filtro de Kalman Extendido (EKF) para fusión de sensores. Incluye modelo cinemático del sistema G2T y comparación EKF vs ground truth. |
 
 ---
 
@@ -42,6 +53,7 @@ Tarea2/
 
 - Python 3.10 o superior
 - ROS 2 bag grabado previamente
+
 ---
 
 ## Instalación
@@ -57,7 +69,6 @@ Alternativamente, se recomienda utilizar un entorno virtual:
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-
 pip install numpy matplotlib scikit-learn rosbags
 ```
 
@@ -65,23 +76,23 @@ pip install numpy matplotlib scikit-learn rosbags
 
 ## Ejecución
 
-Desde la carpeta raíz del proyecto:
+Estimación geométrica (Parte 1):
 
 ```bash
 python3 lidar.py --bag ./dataset_ROS
+```
+
+Estimación con EKF (Parte 2):
+
+```bash
+python3 lidar_kalman.py --bag ./dataset_ROS
 ```
 
 ---
 
 ## Dataset
 
-El rosbag utilizado debe ubicarse dentro de la carpeta:
-
-```text
-dataset_ROS/
-```
-
-o bien indicar la ruta correspondiente mediante el parámetro:
+El rosbag debe ubicarse dentro de la carpeta `dataset_ROS/`, o bien indicar la ruta mediante:
 
 ```bash
 python3 lidar.py --bag <ruta_al_rosbag>
